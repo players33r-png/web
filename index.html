@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Task Manager offline berbasis HTML, CSS, dan Python.">
+  <title>Task Manager Offline</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- HEADER -->
+    <header class="topbar">
+
+      <div class="brand">
+
+        <div class="brand-mark">
+          ✓
+        </div>
+
+        <div>
+          <h1>Task Manager</h1>
+          <p>Kelola tugas dengan sederhana dan rapi.</p>
+        </div>
+
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          class="btn btn-ghost"
+          id="themeBtn"
+          type="button"
+          title="Ganti tema"
+        >
+          🌙 <span>Mode Gelap</span>
+        </button>
+
+        <button
+          class="btn btn-ghost"
+          id="refreshBtn"
+          type="button"
+          title="Muat ulang data"
+        >
+          ↻
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="container">
+
+      <!-- HERO -->
+      <section class="hero">
+
+        <div>
+
+          <div class="eyebrow">
+            OFFLINE WORKSPACE
+          </div>
+
+          <h2>
+            Rencanakan. Kerjakan. Selesaikan.
+          </h2>
+
+          <p>
+            Data tersimpan di komputer melalui server Python lokal.
+            Tidak membutuhkan internet atau database eksternal.
+          </p>
+
+        </div>
+
+        <div
+          class="hero-date"
+          id="todayLabel"
+        >
+          —
+        </div>
+
+      </section>
+
+
+      <!-- STATISTIK -->
+      <section
+        class="stats-grid"
+        aria-label="Statistik tugas"
+      >
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            📋
+          </div>
+
+          <div>
+            <span>Total Task</span>
+            <strong id="totalStat">0</strong>
+          </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            ✅
+          </div>
+
+          <div>
+            <span>Selesai</span>
+            <strong id="doneStat">0</strong>
+          </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            ⏳
+          </div>
+
+          <div>
+            <span>Belum Selesai</span>
+            <strong id="pendingStat">0</strong>
+          </div>
+
+        </article>
+
+
+        <article class="stat-card progress-card">
+
+          <div class="stat-icon">
+            📈
+          </div>
+
+          <div class="progress-content">
+
+            <span>Progress</span>
+            <strong id="progressStat">0%</strong>
+
+          </div>
+
+          <div class="progress-track">
+
+            <div
+              class="progress-bar"
+              id="progressBar"
+            ></div>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- WORKSPACE -->
+      <section class="workspace-grid">
+
+
+        <!-- FORM -->
+        <aside class="panel form-panel">
+
+          <div class="panel-heading">
+
+            <div>
+
+              <h3 id="formTitle">
+                Tambah Task
+              </h3>
+
+              <p id="formSubtitle">
+                Buat tugas baru dan atur deadline.
+              </p>
+
+            </div>
+
+            <button
+              class="icon-btn hidden"
+              id="cancelEditBtn"
+              type="button"
+              title="Batalkan edit"
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <form
+            id="taskForm"
+            novalidate
+          >
+
+            <input
+              type="hidden"
+              id="taskId"
+            >
+
+
+            <!-- NAMA -->
+            <label for="titleInput">
+              Nama Task <span>*</span>
+            </label>
+
+            <input
+              id="titleInput"
+              name="title"
+              maxlength="100"
+              placeholder="Contoh: Selesaikan laporan praktikum"
+              required
+            >
+
+
+            <!-- KATEGORI + PRIORITAS -->
+            <div class="field-row">
+
+              <div>
+
+                <label for="categoryInput">
+                  Kategori
+                </label>
+
+                <input
+                  id="categoryInput"
+                  name="category"
+                  maxlength="40"
+                  placeholder="Kuliah"
+                >
+
+              </div>
+
+
+              <div>
+
+                <label for="priorityInput">
+                  Prioritas
+                </label>
+
+                <select
+                  id="priorityInput"
+                  name="priority"
+                >
+
+                  <option value="Rendah">
+                    Rendah
+                  </option>
+
+                  <option
+                    value="Sedang"
+                    selected
+                  >
+                    Sedang
+                  </option>
+
+                  <option value="Tinggi">
+                    Tinggi
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <!-- DEADLINE + JAM -->
+            <div class="field-row">
+
+              <div>
+
+                <label for="deadlineInput">
+                  Deadline
+                </label>
+
+                <input
+                  id="deadlineInput"
+                  name="deadline"
+                  type="date"
+                >
+
+              </div>
+
+
+              <div>
+
+                <label for="timeInput">
+                  Jam
+                </label>
+
+                <input
+                  id="timeInput"
+                  name="time"
+                  type="time"
+                >
+
+              </div>
+
+            </div>
+
+
+            <!-- CATATAN -->
+            <label for="notesInput">
+              Catatan
+            </label>
+
+            <textarea
+              id="notesInput"
+              name="notes"
+              rows="4"
+              maxlength="300"
+              placeholder="Tambahkan catatan singkat (opsional)"
+            ></textarea>
+
+
+            <!-- SUBMIT -->
+            <button
+              class="btn btn-primary full"
+              type="submit"
+              id="submitBtn"
+            >
+              + Tambah Task
+            </button>
+
+          </form>
+
+        </aside>
+
+
+        <!-- LIST -->
+        <section class="panel list-panel">
+
+
+          <div class="panel-heading list-heading">
+
+            <div>
+
+              <h3>
+                Daftar Task
+              </h3>
+
+              <p id="resultLabel">
+                0 task ditampilkan
+              </p>
+
+            </div>
+
+
+            <button
+              class="btn btn-danger-outline"
+              id="clearCompletedBtn"
+              type="button"
+            >
+              Hapus yang Selesai
+            </button>
+
+          </div>
+
+
+          <!-- TOOLBAR -->
+          <div class="toolbar">
+
+
+            <div class="search-wrap">
+
+              <span>
+                ⌕
+              </span>
+
+              <input
+                id="searchInput"
+                placeholder="Cari nama, kategori, atau catatan..."
+                aria-label="Cari task"
+              >
+
+            </div>
+
+
+            <select
+              id="statusFilter"
+              aria-label="Filter status"
+            >
+
+              <option value="Semua">
+                Semua Status
+              </option>
+
+              <option value="Belum">
+                Belum Selesai
+              </option>
+
+              <option value="Selesai">
+                Selesai
+              </option>
+
+              <option value="Terlambat">
+                Terlambat
+              </option>
+
+            </select>
+
+
+            <select
+              id="priorityFilter"
+              aria-label="Filter prioritas"
+            >
+
+              <option value="Semua">
+                Semua Prioritas
+              </option>
+
+              <option value="Tinggi">
+                Tinggi
+              </option>
+
+              <option value="Sedang">
+                Sedang
+              </option>
+
+              <option value="Rendah">
+                Rendah
+              </option>
+
+            </select>
+
+
+            <select
+              id="sortFilter"
+              aria-label="Urutkan task"
+            >
+
+              <option value="newest">
+                Terbaru
+              </option>
+
+              <option value="oldest">
+                Terlama
+              </option>
+
+              <option value="deadline">
+                Deadline Terdekat
+              </option>
+
+              <option value="priority">
+                Prioritas
+              </option>
+
+              <option value="az">
+                A - Z
+              </option>
+
+              <option value="za">
+                Z - A
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- TASK LIST -->
+          <div
+            id="taskList"
+            class="task-list"
+            aria-live="polite"
+          ></div>
+
+
+        </section>
+
+      </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      Task Manager Offline · HTML + CSS + Python · Data lokal
+    </footer>
+
+  </div>
+
+
+  <!-- TOAST -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- JAVASCRIPT -->
+  <script>
+
+    const state = {
+
+      tasks: [],
+
+      editingId: null,
+
+      search: '',
+
+      status: 'Semua',
+
+      priority: 'Semua',
+
+      sort: 'newest'
+
+    };
+
+
+    const $ = (id) =>
+      document.getElementById(id);
+
+
+    const els = {
+
+      form: $('taskForm'),
+
+      title: $('titleInput'),
+
+      category: $('categoryInput'),
+
+      priority: $('priorityInput'),
+
+      deadline: $('deadlineInput'),
+
+      time: $('timeInput'),
+
+      notes: $('notesInput'),
+
+      taskId: $('taskId'),
+
+      submit: $('submitBtn'),
+
+      cancelEdit: $('cancelEditBtn'),
+
+      formTitle: $('formTitle'),
+
+      formSubtitle: $('formSubtitle'),
+
+      search: $('searchInput'),
+
+      status: $('statusFilter'),
+
+      priorityFilter: $('priorityFilter'),
+
+      sort: $('sortFilter'),
+
+      list: $('taskList'),
+
+      resultLabel: $('resultLabel'),
+
+      total: $('totalStat'),
+
+      done: $('doneStat'),
+
+      pending: $('pendingStat'),
+
+      progress: $('progressStat'),
+
+      progressBar: $('progressBar'),
+
+      clearCompleted: $('clearCompletedBtn'),
+
+      theme: $('themeBtn'),
+
+      refresh: $('refreshBtn'),
+
+      toast: $('toast'),
+
+      today: $('todayLabel')
+
+    };
+
+
+    /* =========================
+       SECURITY
+    ========================= */
+
+    function escapeHtml(value) {
+
+      return String(value ?? '').replace(
+        /[&<>'"]/g,
+
+        ch => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#039;',
+          '"': '&quot;'
+        }[ch])
+
+      );
+
+    }
+
+
+    /* =========================
+       FORMAT DATE
+    ========================= */
+
+    function formatDate(dateStr) {
+
+      if (!dateStr) {
+
+        return 'Tanpa deadline';
+
+      }
+
+      const d =
+        new Date(
+          dateStr + 'T00:00:00'
+        );
+
+      return new Intl.DateTimeFormat(
+        'id-ID',
+        {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }
+      ).format(d);
+
+    }
+
+
+    /* =========================
+       TODAY
+    ========================= */
+
+    function todayISO() {
+
+      const d = new Date();
+
+      const local =
+        new Date(
+          d.getTime()
+          -
+          d.getTimezoneOffset() * 60000
+        );
+
+      return local.toISOString().slice(0, 10);
+
+    }
+
+
+    /* =========================
+       OVERDUE
+    ========================= */
+
+    function isOverdue(task) {
+
+      return Boolean(
+        task.deadline &&
+        !task.completed &&
+        task.deadline < todayISO()
+      );
+
+    }
+
+
+    /* =========================
+       PRIORITY
+    ========================= */
+
+    function priorityRank(value) {
+
+      return {
+        Tinggi: 1,
+        Sedang: 2,
+        Rendah: 3
+      }[value] || 9;
+
+    }
+
+
+    /* =========================
+       DEADLINE VALUE
+    ========================= */
+
+    function deadlineValue(task) {
+
+      if (!task.deadline) {
+
+        return Number.MAX_SAFE_INTEGER;
+
+      }
+
+      return new Date(
+        `${task.deadline}T${task.time || '23:59'}`
+      ).getTime();
+
+    }
+
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    function showToast(
+      message,
+      type = 'success'
+    ) {
+
+      els.toast.textContent = message;
+
+      els.toast.dataset.type = type;
+
+      els.toast.classList.add('show');
+
+      clearTimeout(
+        showToast.timer
+      );
+
+      showToast.timer =
+        setTimeout(
+          () =>
+            els.toast.classList.remove('show'),
+          2400
+        );
+
+    }
+
+
+    /* =========================
+       API
+    ========================= */
+
+    async function api(
+      url,
+      options = {}
+    ) {
+
+      const response =
+        await fetch(
+          url,
+          {
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            ...options
+          }
+        );
+
+
+      const data =
+        await response
+          .json()
+          .catch(
+            () => ({})
+          );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          'Terjadi kesalahan pada server.'
+        );
+
+      }
+
+      return data;
+
+    }
+
+
+    /* =========================
+       LOAD TASK
+    ========================= */
+
+    async function loadTasks(
+      showMessage = false
+    ) {
+
+      try {
+
+        const data =
+          await api('/api/tasks');
+
+        state.tasks =
+          Array.isArray(data.tasks)
+            ? data.tasks
+            : [];
+
+        render();
+
+        if (showMessage) {
+
+          showToast(
+            'Data berhasil dimuat ulang.'
+          );
+
+        }
+
+      }
+
+      catch (error) {
+
+        showToast(
+          error.message,
+          'error'
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       STATISTICS
+    ========================= */
+
+    function renderStats() {
+
+      const total =
+        state.tasks.length;
+
+
+      const done =
+        state.tasks.filter(
+          t => t.completed
+        ).length;
+
+
+      const pending =
+        total - done;
+
+
+      const percent =
+        total
+          ? Math.round(
+              done / total * 100
+            )
+          : 0;
+
+
+      els.total.textContent =
+        total;
+
+
+      els.done.textContent =
+        done;
+
+
+      els.pending.textContent =
+        pending;
+
+
+      els.progress.textContent =
+        `${percent}%`;
+
+
+      els.progressBar.style.width =
+        `${percent}%`;
+
+    }
+
+
+    /* =========================
+       FILTER
+    ========================= */
+
+    function filteredTasks() {
+
+      let result =
+        [...state.tasks];
+
+
+      const q =
+        state.search
+          .trim()
+          .toLowerCase();
+
+
+      if (q) {
+
+        result =
+          result.filter(
+            task =>
+              [
+                task.title,
+                task.category,
+                task.notes
+              ].some(
+                value =>
+                  String(value || '')
+                    .toLowerCase()
+                    .includes(q)
+              )
+          );
+
+      }
+
+
+      if (
+        state.status ===
+        'Selesai'
+      ) {
+
+        result =
+          result.filter(
+            task =>
+              task.completed
+          );
+
+      }
+
+
+      if (
+        state.status ===
+        'Belum'
+      ) {
+
+        result =
+          result.filter(
+            task =>
+              !task.completed
+          );
+
+      }
+
+
+      if (
+        state.status ===
+        'Terlambat'
+      ) {
+
+        result =
+          result.filter(
+            isOverdue
+          );
+
+      }
+
+
+      if (
+        state.priority !==
+        'Semua'
+      ) {
+
+        result =
+          result.filter(
+            task =>
+              task.priority ===
+              state.priority
+          );
+
+      }
+
+
+      /* SORT */
+
+      result.sort(
+        (a, b) => {
+
+          switch (
+            state.sort
+          ) {
+
+            case 'oldest':
+
+              return (
+                (a.createdAt || 0)
+                -
+                (b.createdAt || 0)
+              );
+
+
+            case 'deadline':
+
+              return (
+                deadlineValue(a)
+                -
+                deadlineValue(b)
+              );
+
+
+            case 'priority':
+
+              return (
+                priorityRank(
+                  a.priority
+                )
+                -
+                priorityRank(
+                  b.priority
+                )
+              )
+              ||
+              (
+                (b.createdAt || 0)
+                -
+                (a.createdAt || 0)
+              );
+
+
+            case 'az':
+
+              return a.title.localeCompare(
+                b.title,
+                'id'
+              );
+
+
+            case 'za':
+
+              return b.title.localeCompare(
+                a.title,
+                'id'
+              );
+
+
+            default:
+
+              return (
+                (b.createdAt || 0)
+                -
+                (a.createdAt || 0)
+              );
+
+          }
+
+        }
+      );
+
+
+      return result;
+
+    }
+
+
+    /* =========================
+       TASK CARD
+    ========================= */
+
+    function taskCard(task) {
+
+      const overdue =
+        isOverdue(task);
+
+
+      const deadline =
+        task.deadline
+
+          ? `${formatDate(task.deadline)}${
+              task.time
+                ? ' · ' +
+                  escapeHtml(task.time)
+                : ''
+            }`
+
+          : 'Tanpa deadline';
+
+
+      const badge =
+        overdue
+
+          ? `
+            <span class="badge overdue">
+              Terlambat
+            </span>
+          `
+
+          : '';
+
+
+      return `
+
+        <article
+          class="task-card ${
+            task.completed
+              ? 'completed'
+              : ''
+          }"
+        >
+
+          <div class="task-check-wrap">
+
+            <button
+              class="check-btn ${
+                task.completed
+                  ? 'checked'
+                  : ''
+              }"
+              data-action="toggle"
+              data-id="${task.id}"
+              title="${
+                task.completed
+                  ? 'Tandai belum selesai'
+                  : 'Tandai selesai'
+              }"
+            >
+              ${
+                task.completed
+                  ? '✓'
+                  : ''
+              }
+            </button>
+
+          </div>
+
+
+          <div class="task-main">
+
+            <div class="task-topline">
+
+              <h4>
+                ${escapeHtml(task.title)}
+              </h4>
+
+              <span
+                class="priority-badge ${task.priority.toLowerCase()}"
+              >
+                ${escapeHtml(task.priority)}
+              </span>
+
+            </div>
+
+
+            <div class="task-meta">
+
+              <span>
+                📁
+                ${escapeHtml(
+                  task.category || 'Umum'
+                )}
+              </span>
+
+              <span>
+                📅
+                ${deadline}
+              </span>
+
+              ${badge}
+
+            </div>
+
+
+            ${
+              task.notes
+                ? `
+                    <p class="task-notes">
+                      ${escapeHtml(task.notes)}
+                    </p>
+                  `
+                : ''
+            }
+
+          </div>
+
+
+          <div class="task-actions">
+
+            <button
+              class="icon-btn edit"
+              data-action="edit"
+              data-id="${task.id}"
+              title="Edit task"
+            >
+              ✎
+            </button>
+
+
+            <button
+              class="icon-btn delete"
+              data-action="delete"
+              data-id="${task.id}"
+              title="Hapus task"
+            >
+              🗑
+            </button>
+
+          </div>
+
+        </article>
+
+      `;
+
+    }
+
+
+    /* =========================
+       RENDER
+    ========================= */
+
+    function render() {
+
+      renderStats();
+
+
+      const result =
+        filteredTasks();
+
+
+      els.resultLabel.textContent =
+        `${result.length} dari ${state.tasks.length} task ditampilkan`;
+
+
+      els.list.innerHTML =
+        result.length
+
+          ? result
+              .map(taskCard)
+              .join('')
+
+          : `
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+                  🗂️
+                </div>
+
+                <h4>
+                  ${
+                    state.tasks.length
+                      ? 'Tidak ada task yang cocok'
+                      : 'Belum ada task'
+                  }
+                </h4>
+
+                <p>
+                  ${
+                    state.tasks.length
+                      ? 'Coba ubah pencarian atau filter.'
+                      : 'Tambahkan task pertama melalui form di sebelah kiri.'
+                  }
+                </p>
+
+              </div>
+
+            `;
+
+    }
+
+
+    /* =========================
+       RESET FORM
+    ========================= */
+
+    function resetForm() {
+
+      state.editingId =
+        null;
+
+
+      els.form.reset();
+
+
+      els.priority.value =
+        'Sedang';
+
+
+      els.submit.textContent =
+        '+ Tambah Task';
+
+
+      els.formTitle.textContent =
+        'Tambah Task';
+
+
+      els.formSubtitle.textContent =
+        'Buat tugas baru dan atur deadline.';
+
+
+      els.cancelEdit.classList.add(
+        'hidden'
+      );
+
+    }
+
+
+    /* =========================
+       EDIT
+    ========================= */
+
+    function beginEdit(id) {
+
+      const task =
+        state.tasks.find(
+          t =>
+            Number(t.id) ===
+            Number(id)
+        );
+
+
+      if (!task) return;
+
+
+      state.editingId =
+        task.id;
+
+
+      els.title.value =
+        task.title;
+
+
+      els.category.value =
+        task.category || '';
+
+
+      els.priority.value =
+        task.priority || 'Sedang';
+
+
+      els.deadline.value =
+        task.deadline || '';
+
+
+      els.time.value =
+        task.time || '';
+
+
+      els.notes.value =
+        task.notes || '';
+
+
+      els.submit.textContent =
+        'Simpan Perubahan';
+
+
+      els.formTitle.textContent =
+        'Edit Task';
+
+
+      els.formSubtitle.textContent =
+        'Perbarui informasi task yang dipilih.';
+
+
+      els.cancelEdit.classList.remove(
+        'hidden'
+      );
+
+
+      els.title.focus();
+
+
+      window.scrollTo(
+        {
+          top: 0,
+          behavior: 'smooth'
+        }
+      );
+
+    }
+
+
+    /* =========================
+       FORM SUBMIT
+    ========================= */
+
+    els.form.addEventListener(
+      'submit',
+      async event => {
+
+        event.preventDefault();
+
+
+        const payload = {
+
+          title:
+            els.title.value.trim(),
+
+          category:
+            els.category.value.trim()
+              || 'Umum',
+
+          priority:
+            els.priority.value,
+
+          deadline:
+            els.deadline.value,
+
+          time:
+            els.time.value,
+
+          notes:
+            els.notes.value.trim()
+
+        };
+
+
+        if (!payload.title) {
+
+          showToast(
+            'Nama task wajib diisi.',
+            'error'
+          );
+
+          els.title.focus();
+
+          return;
+
+        }
+
+
+        try {
+
+          if (
+            state.editingId !==
+            null
+          ) {
+
+            await api(
+              `/api/tasks/${state.editingId}`,
+              {
+                method: 'PUT',
+
+                body:
+                  JSON.stringify(
+                    payload
+                  )
+              }
+            );
+
+
+            showToast(
+              'Task berhasil diperbarui.'
+            );
+
+          }
+
+          else {
+
+            await api(
+              '/api/tasks',
+              {
+                method: 'POST',
+
+                body:
+                  JSON.stringify(
+                    payload
+                  )
+              }
+            );
+
+
+            showToast(
+              'Task berhasil ditambahkan.'
+            );
+
+          }
+
+
+          resetForm();
+
+          await loadTasks();
+
+        }
+
+        catch (error) {
+
+          showToast(
+            error.message,
+            'error'
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       TASK ACTION
+    ========================= */
+
+    els.list.addEventListener(
+      'click',
+      async event => {
+
+        const button =
+          event.target.closest(
+            '[data-action]'
+          );
+
+
+        if (!button) return;
+
+
+        const id =
+          button.dataset.id;
+
+
+        const action =
+          button.dataset.action;
+
+
+        try {
+
+          /* TOGGLE */
+
+          if (
+            action ===
+            'toggle'
+          ) {
+
+            await api(
+              `/api/tasks/${id}/toggle`,
+              {
+                method: 'POST'
+              }
+            );
+
+
+            showToast(
+              'Status task diperbarui.'
+            );
+
+          }
+
+
+          /* EDIT */
+
+          else if (
+            action ===
+            'edit'
+          ) {
+
+            beginEdit(id);
+
+            return;
+
+          }
+
+
+          /* DELETE */
+
+          else if (
+            action ===
+            'delete'
+          ) {
+
+            if (
+              !confirm(
+                'Hapus task ini?'
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            await api(
+              `/api/tasks/${id}`,
+              {
+                method: 'DELETE'
+              }
+            );
+
+
+            showToast(
+              'Task dihapus.'
+            );
+
+          }
+
+
+          await loadTasks();
+
+        }
+
+        catch (error) {
+
+          showToast(
+            error.message,
+            'error'
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       CANCEL EDIT
+    ========================= */
+
+    els.cancelEdit.addEventListener(
+      'click',
+      resetForm
+    );
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    els.search.addEventListener(
+      'input',
+      event => {
+
+        state.search =
+          event.target.value;
+
+        render();
+
+      }
+    );
+
+
+    /* =========================
+       STATUS FILTER
+    ========================= */
+
+    els.status.addEventListener(
+      'change',
+      event => {
+
+        state.status =
+          event.target.value;
+
+        render();
+
+      }
+    );
+
+
+    /* =========================
+       PRIORITY FILTER
+    ========================= */
+
+    els.priorityFilter.addEventListener(
+      'change',
+      event => {
+
+        state.priority =
+          event.target.value;
+
+        render();
+
+      }
+    );
+
+
+    /* =========================
+       SORT
+    ========================= */
+
+    els.sort.addEventListener(
+      'change',
+      event => {
+
+        state.sort =
+          event.target.value;
+
+        render();
+
+      }
+    );
+
+
+    /* =========================
+       REFRESH
+    ========================= */
+
+    els.refresh.addEventListener(
+      'click',
+      () =>
+        loadTasks(true)
+    );
+
+
+    /* =========================
+       DELETE COMPLETED
+    ========================= */
+
+    els.clearCompleted.addEventListener(
+      'click',
+      async () => {
+
+        const count =
+          state.tasks.filter(
+            t => t.completed
+          ).length;
+
+
+        if (!count) {
+
+          showToast(
+            'Belum ada task yang selesai.',
+            'error'
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !confirm(
+            `Hapus ${count} task yang sudah selesai?`
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        try {
+
+          await api(
+            '/api/tasks/completed',
+            {
+              method: 'DELETE'
+            }
+          );
+
+
+          showToast(
+            `${count} task selesai dihapus.`
+          );
+
+
+          await loadTasks();
+
+        }
+
+        catch (error) {
+
+          showToast(
+            error.message,
+            'error'
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       THEME
+    ========================= */
+
+    function setTheme(dark) {
+
+      document.body.classList.toggle(
+        'dark',
+        dark
+      );
+
+
+      localStorage.setItem(
+        'taskTheme',
+        dark
+          ? 'dark'
+          : 'light'
+      );
+
+
+      els.theme.innerHTML =
+
+        dark
+
+          ? '☀️ <span>Mode Terang</span>'
+
+          : '🌙 <span>Mode Gelap</span>';
+
+    }
+
+
+    els.theme.addEventListener(
+      'click',
+      () =>
+        setTheme(
+          !document.body.classList.contains(
+            'dark'
+          )
+        )
+    );
+
+
+    /* LOAD THEME */
+
+    setTheme(
+      localStorage.getItem(
+        'taskTheme'
+      ) === 'dark'
+    );
+
+
+    /* TODAY */
+
+    els.today.textContent =
+      new Intl.DateTimeFormat(
+        'id-ID',
+        {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }
+      ).format(
+        new Date()
+      );
+
+
+    /* START */
+
+    loadTasks();
+
+  </script>
+
+</body>
+</html>
